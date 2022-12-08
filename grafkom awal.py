@@ -27,19 +27,19 @@ pla_y_2 = 30
 score = 0
 
 # level
-lvl = 1 
+lvl = 0 
 
 # posisi spawn meteors
 random_X_spawn = []
-for i in range(-400, 400, 10):
+for i in range(-350, 350, 10):
     random_X_spawn.append(i)
 
 # ukuran meteor
 ukuran_meteor = [10, 30, 40]
 
 # kecepatan meteor
-speed_meteor = 0.2
-speed_meteor1 = 0.2
+speed_meteor = 0.1
+speed_meteor1 = 0.1
 
 # spawn random meteor
 meteor = [random_X_spawn[rn.randint(0, len(random_X_spawn) - 1 )], ukuran_meteor[rn.randint(0, 2)]]
@@ -60,7 +60,7 @@ x_batas_kanan_player = 400
 tabrak = False
 
 # play
-play = False
+play = 0
 
 
 def init():
@@ -91,29 +91,13 @@ def gerak_meteor():
             time.sleep(3)
             tabrak = True
 
-    # score = int(score)
-    # score += 1
-    # if (score%100) == 1:
-    #     speed_meteor += 0.0001
-    #     score = str(score)
-    # else : 
-    #     score = str(score)   
-
-    # lvl = int(lvl) 
-    # lvl += 1
-    # if (lvl%100) == 1:
-    #     speed_meteor += 0.0001
-    #     lvl = str(lvl)
-    # else : 
-    #     lvl = str(lvl)
-
 def gerak_meteor1():
     global Y_meteor, meteor, speed_meteor, x_jalan_kiri, x_jalan_kanan, x_batas_kiri_player, x_batas_kanan_player, score, lvl, tabrak
     Y_meteor -= speed_meteor
     
     if Y_meteor < -1300:
         meteor = [random_X_spawn[ rn.randint(0, len(random_X_spawn) - 1 )], ukuran_meteor[rn.randint(0, 2)]]
-        X_meteors = 0
+        Y_meteor = 0
 
     if meteor[1] == 10:
         if (gerak_x in range(meteor[0] - 30, meteor[0] + 40)) <= -1160:
@@ -127,22 +111,6 @@ def gerak_meteor1():
         if (gerak_x in range(meteor[0] - 60, meteor[0] + 70)) <= -1140:
             time.sleep(3)
             tabrak = True
-
-    # score = int(score)
-    # score += 1
-    # if (score%100) == 1:
-    #     speed_meteor += 0.001
-    #     score = str(score)
-    # else : 
-    #     score = str(score)
-
-    # lvl = int(lvl) 
-    # lvl += 1
-    # if (lvl%100) == 1:
-    #     speed_meteor += 0.001
-    #     lvl = str(lvl)
-    # else : 
-    #     lvl = str(lvl)
 
 def meteorsPoints(x, y, s):
     glTranslate(0, Y_meteor, 0)
@@ -190,6 +158,7 @@ def munculkan_text_score(x, y, font, text, score, r,  g , b , a):
         glDisable(GL_BLEND) 
 
 def munculkan_text_lvl(x, y, font, text, lvl, r,  g , b , a):
+    global speed_meteor1, speed_meteor
     blending = False 
 
     if glIsEnabled(GL_BLEND) :
@@ -201,16 +170,17 @@ def munculkan_text_lvl(x, y, font, text, lvl, r,  g , b , a):
         glutBitmapCharacter(font, ctypes.c_int(ord(i)))
     for i in lvl :
         glutBitmapCharacter(font, ctypes.c_int(ord(i)))
+    
 
     if not blending :
         glDisable(GL_BLEND) 
 
 def Score():
-    munculkan_text_score(-455, 450, glut.GLUT_BITMAP_HELVETICA_18, "Score: ", str(score), 1, 1, 1, 0)
+    munculkan_text_score(-380, 450, glut.GLUT_BITMAP_HELVETICA_12, "Score: ", str(score), 1, 1, 1, 0)
     glutSwapBuffers()
 
 def Level():
-    munculkan_text_lvl(-455, 400, glut.GLUT_BITMAP_HELVETICA_18, "Level: ", str(lvl), 1, 1, 1, 0)
+    munculkan_text_lvl(-380, 400, glut.GLUT_BITMAP_HELVETICA_12, "Level: ", str(lvl), 1, 1, 1, 0)
     glutSwapBuffers()
 
 def scoring():
@@ -219,12 +189,11 @@ def scoring():
         score += 1
         if (score%10000) == 1:
             lvl += 1
-            speed_meteor += 0.02
-            speed_meteor1 += 0.2
+            speed_meteor += 0.5
+            speed_meteor1 += 0.05
  
 def circle(r,xR,yR):
     glPushMatrix()
-    glColor3ub(0,0,255)
     glBegin(GL_POLYGON)
     for i in range(360):
         theta= 2 *3.1415926*i/360
@@ -235,8 +204,21 @@ def circle(r,xR,yR):
     glPopMatrix()
 
 def planet():
-    global plnt_x, plnt_y
-    circle(50,100,100)
+    # planet 1
+    glColor3ub(190,130,20)
+    circle(100,200,500)
+
+    # planet 2
+    glColor3ub(0,105,205)
+    circle(180,-200,300)
+
+    # planet 3
+    glColor3ub(205,0,0)
+    circle(260,-600,-100)
+
+    # planet 4
+    glColor3ub(255,255,0)
+    circle(400,700,-100)
 
 def player():
     global gerak_x, gerak_y
@@ -255,19 +237,19 @@ def player():
     # LEFT WING
     glBegin(GL_QUADS)
     glColor3ub(150, 0, 0)
-    glVertex2f(pla_x_1 - 20 + gerak_x, pla_y_1 - 60 + gerak_y)
-    glVertex2f(pla_x_1 - 20 + gerak_x, pla_y_1 - 40 + gerak_y)
-    glVertex2f(pla_x_1 + 12 + gerak_x, pla_y_1 - 20 + gerak_y)
-    glVertex2f(pla_x_1 + 7 + gerak_x, pla_y_1 - 40 + gerak_y)
+    glVertex2f(pla_x_1 - 7 + gerak_x, pla_y_1 - 66 + gerak_y)
+    glVertex2f(pla_x_1 - 7 + gerak_x, pla_y_1 - 47 + gerak_y)
+    glVertex2f(pla_x_1 + 12 + gerak_x, pla_y_1 + 10 + gerak_y)
+    glVertex2f(pla_x_1 + 5 + gerak_x, pla_y_1 - 40 + gerak_y)
     glEnd()
 
     # RIGHT WING
     glBegin(GL_QUADS)
     glColor3ub(150, 0, 0)
-    glVertex2f(pla_x_1 + 68 + gerak_x, pla_y_1 - 20 + gerak_y)
-    glVertex2f(pla_x_1 + 100 + gerak_x, pla_y_1 - 40 + gerak_y)
-    glVertex2f(pla_x_1 + 100 + gerak_x, pla_y_1 - 60 + gerak_y)
-    glVertex2f(pla_x_1 + 72 + gerak_x, pla_y_1 - 40 + gerak_y)
+    glVertex2f(pla_x_1 + 68 + gerak_x, pla_y_1 + 10 + gerak_y)
+    glVertex2f(pla_x_1 + 87 + gerak_x, pla_y_1 - 47 + gerak_y)
+    glVertex2f(pla_x_1 + 87 + gerak_x, pla_y_1 - 65 + gerak_y)
+    glVertex2f(pla_x_1 + 75 + gerak_x, pla_y_1 - 40 + gerak_y)
     glEnd()
 
     # WINDOW
@@ -279,22 +261,56 @@ def player():
     glVertex2f(pla_x_1 + 28 + gerak_x, pla_y_1 + 8 + gerak_y)
     glEnd()
 
+    # NOS1
+    glBegin(GL_QUADS)
+    glColor3ub(75, 75, 75)
+    glVertex2f(pla_x_1 + 12 + gerak_x, pla_y_1 - 40 + gerak_y)
+    glVertex2f(pla_x_1 + 68 + gerak_x, pla_y_1 - 40 + gerak_y)
+    glVertex2f(pla_x_1 + 68 + gerak_x, pla_y_1 - 56 + gerak_y)
+    glVertex2f(pla_x_1 + 12 + gerak_x, pla_y_1 - 56 + gerak_y)
+    glEnd()
+
+    # NOS2
+    glBegin(GL_QUADS)
+    glColor3ub(255, 85, 0)
+    glVertex2f(pla_x_1 + 48 + gerak_x, pla_y_1 - 68 + gerak_y)
+    glVertex2f(pla_x_1 + 32 + gerak_x, pla_y_1 - 68 + gerak_y)
+    glVertex2f(pla_x_1 + 32 + gerak_x, pla_y_1 - 56 + gerak_y)
+    glVertex2f(pla_x_1 + 48 + gerak_x, pla_y_1 - 56 + gerak_y)
+    glEnd()
+
 def input_keyboard(key, x, y):
-    global gerak_x, gerak_y, x_batas_kiri_player, x_batas_kanan_player
+    global gerak_x, gerak_y, x_batas_kiri_player, x_batas_kanan_player,play, tabrak
 
     # Untuk mengubah posisi player
     if key == GLUT_KEY_RIGHT:
-        gerak_x += 20
+        gerak_x += 30
     if key == GLUT_KEY_LEFT:
-        gerak_x -= 20
+        gerak_x -= 30
+    if key == GLUT_KEY_UP:
+            play = 1
 
-    if gerak_x == x_batas_kiri_player or gerak_x == x_batas_kanan_player:
-        glutLeaveMainLoop()
+    if gerak_x - 22 < x_batas_kiri_player or gerak_x + 22 > x_batas_kanan_player:
+        tabrak = True
 
+def text_menu(x, y, font, text, r,  g , b , a):
+    blending = False 
+
+    if glIsEnabled(GL_BLEND) :
+        blending = True
+
+    glRasterPos2f(x,y)
+
+    for i in text :
+        glutBitmapCharacter(font, ctypes.c_int(ord(i)))
+
+    if not blending :
+        glDisable(GL_BLEND)
+    
 def menu():
     global play
     glClear(GL_COLOR_BUFFER_BIT)
-    if play == True:
+    if play == 1 :
         if tabrak == False:
             # print (speed_meteor)
             glPushMatrix()
@@ -328,22 +344,26 @@ def menu():
             Level()
             glPopMatrix()
         else:
-            print("GAME OVER") # bagian game over
+            time.sleep(3)
+            text_menu(-100,0, glut.GLUT_BITMAP_HELVETICA_18, "GAME OVER", 1, 1, 1, 0)
+            # bagian game over
     else:
-        print("PLAY GAME")
-        play = True # kalo tombol play diklik, masuk ke game
+        text_menu(-130,100, glut.GLUT_BITMAP_TIMES_ROMAN_24, "Rocket Keeper", 1, 1, 1, 0)
+        text_menu(-100,0, glut.GLUT_BITMAP_HELVETICA_18, "PLAY GAME", 1, 1, 1, 0)
+        text_menu(-50,-50, glut.GLUT_BITMAP_HELVETICA_12, "PRESS UP", 1, 1, 1, 0)
+        # kalo tombol play diklik, masuk ke game
     glFlush()
-
+ 
 def main():
     glutInit(sys.argv)
     glutInitDisplayMode(GLUT_SINGLE|GLUT_RGB)
     glutInitWindowSize(500,500)
     glutInitWindowPosition(100,100)
-    glutCreateWindow("Rocket")
+    glutCreateWindow("Rocket Keeper") 
+    init()
+    glutSpecialFunc(input_keyboard)
     glutDisplayFunc(menu)
     glutIdleFunc(menu)
-    glutSpecialFunc(input_keyboard)
-    init()
     glutMainLoop()
 
 main()
