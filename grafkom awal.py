@@ -27,7 +27,7 @@ pla_y_2 = 30
 score = 0
 
 # level
-lvl = 1 
+lvl = 0 
 
 # posisi spawn meteors
 random_X_spawn = []
@@ -60,7 +60,7 @@ x_batas_kanan_player = 400
 tabrak = False
 
 # play
-play = False
+play = 0
 
 
 def init():
@@ -190,6 +190,7 @@ def munculkan_text_score(x, y, font, text, score, r,  g , b , a):
         glDisable(GL_BLEND) 
 
 def munculkan_text_lvl(x, y, font, text, lvl, r,  g , b , a):
+    global speed_meteor1, speed_meteor
     blending = False 
 
     if glIsEnabled(GL_BLEND) :
@@ -201,16 +202,17 @@ def munculkan_text_lvl(x, y, font, text, lvl, r,  g , b , a):
         glutBitmapCharacter(font, ctypes.c_int(ord(i)))
     for i in lvl :
         glutBitmapCharacter(font, ctypes.c_int(ord(i)))
+    
 
     if not blending :
         glDisable(GL_BLEND) 
 
 def Score():
-    munculkan_text_score(-455, 450, glut.GLUT_BITMAP_HELVETICA_18, "Score: ", str(score), 1, 1, 1, 0)
+    munculkan_text_score(-380, 450, glut.GLUT_BITMAP_HELVETICA_12, "Score: ", str(score), 1, 1, 1, 0)
     glutSwapBuffers()
 
 def Level():
-    munculkan_text_lvl(-455, 400, glut.GLUT_BITMAP_HELVETICA_18, "Level: ", str(lvl), 1, 1, 1, 0)
+    munculkan_text_lvl(-380, 400, glut.GLUT_BITMAP_HELVETICA_12, "Level: ", str(lvl), 1, 1, 1, 0)
     glutSwapBuffers()
 
 def scoring():
@@ -219,8 +221,8 @@ def scoring():
         score += 1
         if (score%10000) == 1:
             lvl += 1
-            speed_meteor += 0.02
-            speed_meteor1 += 0.2
+            speed_meteor += 0.05
+            speed_meteor1 += 0.05
  
 def circle(r,xR,yR):
     glPushMatrix()
@@ -236,7 +238,7 @@ def circle(r,xR,yR):
 
 def planet():
     global plnt_x, plnt_y
-    circle(50,100,100)
+    circle(10,20,20)
 
 def player():
     global gerak_x, gerak_y
@@ -280,17 +282,20 @@ def player():
     glEnd()
 
 def input_keyboard(key, x, y):
-    global gerak_x, gerak_y, x_batas_kiri_player, x_batas_kanan_player
+    global gerak_x, gerak_y, x_batas_kiri_player, x_batas_kanan_player,play
 
     # Untuk mengubah posisi player
-    if key == GLUT_KEY_RIGHT:
+    if key == GLUT_KEY_F1:
         gerak_x += 30
-    if key == GLUT_KEY_LEFT:
+    if key == GLUT_KEY_F2:
         gerak_x -= 30
+    if key == GLUT_KEY_F1:
+            play = 1
 
     if gerak_x == x_batas_kiri_player or gerak_x == x_batas_kanan_player:
         glutLeaveMainLoop()
-def gameover(x, y, font, text, r,  g , b , a):
+
+def text_menu(x, y, font, text, r,  g , b , a):
     blending = False 
 
     if glIsEnabled(GL_BLEND) :
@@ -303,10 +308,11 @@ def gameover(x, y, font, text, r,  g , b , a):
 
     if not blending :
         glDisable(GL_BLEND)
+    
 def menu():
     global play
     glClear(GL_COLOR_BUFFER_BIT)
-    if play == True:
+    if play == 1 :
         if tabrak == False:
             # print (speed_meteor)
             glPushMatrix()
@@ -340,12 +346,13 @@ def menu():
             Level()
             glPopMatrix()
         else:
-            gameover(-100,0, glut.GLUT_BITMAP_HELVETICA_18, "GAME OVER ", 1, 1, 1, 0)
-            glutSwapBuffers()
+            text_menu(-100,0, glut.GLUT_BITMAP_HELVETICA_18, "GAME OVER", 1, 1, 1, 0)
             # bagian game over
     else:
-        print("PLAY GAME")
-        play = True # kalo tombol play diklik, masuk ke game
+        text_menu(-130,100, glut.GLUT_BITMAP_TIMES_ROMAN_24, "Rocket Keeper", 1, 1, 1, 0)
+        text_menu(-100,0, glut.GLUT_BITMAP_HELVETICA_18, "PLAY GAME", 1, 1, 1, 0)
+        text_menu(-50,-50, glut.GLUT_BITMAP_HELVETICA_12, "PRESS F1", 1, 1, 1, 0)
+        # kalo tombol play diklik, masuk ke game
     glFlush()
  
 def main():
@@ -353,11 +360,11 @@ def main():
     glutInitDisplayMode(GLUT_SINGLE|GLUT_RGB)
     glutInitWindowSize(500,500)
     glutInitWindowPosition(100,100)
-    glutCreateWindow("Rocket")
+    glutCreateWindow("Rocket Keeper") 
+    init()
+    glutSpecialFunc(input_keyboard)
     glutDisplayFunc(menu)
     glutIdleFunc(menu)
-    glutSpecialFunc(input_keyboard)
-    init()
     glutMainLoop()
 
 main()
