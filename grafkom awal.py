@@ -189,7 +189,11 @@ def scoring():
         score += 1
         if (score%10000) == 1:
             lvl += 1
+<<<<<<< HEAD
             speed_meteor += 0.5
+=======
+            speed_meteor += 0.05
+>>>>>>> e7ec994c2844aaa7ad69aef07af63a435917271c
             speed_meteor1 += 0.05
  
 def circle(r,xR,yR):
@@ -204,6 +208,7 @@ def circle(r,xR,yR):
     glPopMatrix()
 
 def planet():
+<<<<<<< HEAD
     # planet 1
     glColor3ub(190,130,20)
     circle(100,200,500)
@@ -219,6 +224,10 @@ def planet():
     # planet 4
     glColor3ub(255,255,0)
     circle(400,700,-100)
+=======
+    global plnt_x, plnt_y
+    circle(10,20,20)
+>>>>>>> e7ec994c2844aaa7ad69aef07af63a435917271c
 
 def player():
     global gerak_x, gerak_y
@@ -237,8 +246,13 @@ def player():
     # LEFT WING
     glBegin(GL_QUADS)
     glColor3ub(150, 0, 0)
+<<<<<<< HEAD
     glVertex2f(pla_x_1 - 7 + gerak_x, pla_y_1 - 66 + gerak_y)
     glVertex2f(pla_x_1 - 7 + gerak_x, pla_y_1 - 47 + gerak_y)
+=======
+    glVertex2f(pla_x_1 - 5 + gerak_x, pla_y_1 - 60 + gerak_y)
+    glVertex2f(pla_x_1 - 5 + gerak_x, pla_y_1 - 40 + gerak_y)
+>>>>>>> e7ec994c2844aaa7ad69aef07af63a435917271c
     glVertex2f(pla_x_1 + 12 + gerak_x, pla_y_1 + 10 + gerak_y)
     glVertex2f(pla_x_1 + 5 + gerak_x, pla_y_1 - 40 + gerak_y)
     glEnd()
@@ -249,7 +263,11 @@ def player():
     glVertex2f(pla_x_1 + 68 + gerak_x, pla_y_1 + 10 + gerak_y)
     glVertex2f(pla_x_1 + 87 + gerak_x, pla_y_1 - 47 + gerak_y)
     glVertex2f(pla_x_1 + 87 + gerak_x, pla_y_1 - 65 + gerak_y)
+<<<<<<< HEAD
     glVertex2f(pla_x_1 + 75 + gerak_x, pla_y_1 - 40 + gerak_y)
+=======
+    glVertex2f(pla_x_1 + 72 + gerak_x, pla_y_1 - 40 + gerak_y)
+>>>>>>> e7ec994c2844aaa7ad69aef07af63a435917271c
     glEnd()
 
     # WINDOW
@@ -280,6 +298,7 @@ def player():
     glEnd()
 
 def input_keyboard(key, x, y):
+<<<<<<< HEAD
     global gerak_x, gerak_y, x_batas_kiri_player, x_batas_kanan_player,play, tabrak
 
     # Untuk mengubah posisi player
@@ -288,6 +307,16 @@ def input_keyboard(key, x, y):
     if key == GLUT_KEY_LEFT:
         gerak_x -= 30
     if key == GLUT_KEY_UP:
+=======
+    global gerak_x, gerak_y, x_batas_kiri_player, x_batas_kanan_player,play
+
+    # Untuk mengubah posisi player
+    if key == GLUT_KEY_F1:
+        gerak_x += 30
+    if key == GLUT_KEY_F2:
+        gerak_x -= 30
+    if key == GLUT_KEY_F1:
+>>>>>>> e7ec994c2844aaa7ad69aef07af63a435917271c
             play = 1
 
     if gerak_x - 22 < x_batas_kiri_player or gerak_x + 22 > x_batas_kanan_player:
@@ -344,13 +373,20 @@ def menu():
             Level()
             glPopMatrix()
         else:
+<<<<<<< HEAD
             time.sleep(3)
+=======
+>>>>>>> e7ec994c2844aaa7ad69aef07af63a435917271c
             text_menu(-100,0, glut.GLUT_BITMAP_HELVETICA_18, "GAME OVER", 1, 1, 1, 0)
             # bagian game over
     else:
         text_menu(-130,100, glut.GLUT_BITMAP_TIMES_ROMAN_24, "Rocket Keeper", 1, 1, 1, 0)
         text_menu(-100,0, glut.GLUT_BITMAP_HELVETICA_18, "PLAY GAME", 1, 1, 1, 0)
+<<<<<<< HEAD
         text_menu(-50,-50, glut.GLUT_BITMAP_HELVETICA_12, "PRESS UP", 1, 1, 1, 0)
+=======
+        text_menu(-50,-50, glut.GLUT_BITMAP_HELVETICA_12, "PRESS F1", 1, 1, 1, 0)
+>>>>>>> e7ec994c2844aaa7ad69aef07af63a435917271c
         # kalo tombol play diklik, masuk ke game
     glFlush()
  
