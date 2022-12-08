@@ -4,6 +4,7 @@ from OpenGL.GLU import *
 import time
 import random as rn
 import OpenGL.GLUT as glut
+import math
 
 w,h= 500,500
 
@@ -24,6 +25,10 @@ pla_y_2 = 30
 
 # score
 score = 0
+
+# level
+lvl = 1 
+
 # posisi spawn meteors
 random_X_spawn = []
 for i in range(-400, 400, 10):
@@ -33,7 +38,8 @@ for i in range(-400, 400, 10):
 ukuran_meteor = [10, 30, 40]
 
 # kecepatan meteor
-speed_meteor = 0.1
+speed_meteor = 0.2
+speed_meteor1 = 0.2
 
 # spawn random meteor
 meteor = [random_X_spawn[rn.randint(0, len(random_X_spawn) - 1 )], ukuran_meteor[rn.randint(0, 2)]]
@@ -50,6 +56,11 @@ x_batas_kiri_player = -400
 # batas player kanan
 x_batas_kanan_player = 400
 
+# nabrak
+tabrak = False
+
+# play
+play = False
 
 
 def init():
@@ -58,7 +69,7 @@ def init():
     
 
 def gerak_meteor():
-    global Y_meteor, meteor, speed_meteor, x_jalan_kiri, x_jalan_kanan, x_batas_kiri_player, x_batas_kanan_player, score
+    global Y_meteor, meteor, speed_meteor, x_jalan_kiri, x_jalan_kanan, x_batas_kiri_player, x_batas_kanan_player, score, lvl, tabrak
     Y_meteor -= speed_meteor
     
     if Y_meteor < -1300:
@@ -67,28 +78,37 @@ def gerak_meteor():
 
     if meteor[1] == 10:
         if (gerak_x in range(meteor[0] - 30, meteor[0] + 40)) and Y_meteor <= -1160:
-            
             time.sleep(3)
-            glutLeaveMainLoop()
+            tabrak = True          
+
     elif meteor[1] == 30:
         if (gerak_x in range(meteor[0] - 50, meteor[0] + 60)) and Y_meteor <= -1140:
             time.sleep(3)
-            glutLeaveMainLoop()
+            tabrak = True
+
     elif meteor[1] == 40:
         if (gerak_x in range(meteor[0] - 60, meteor[0] + 70)) and Y_meteor <= -1130:
             time.sleep(3)
-            glutLeaveMainLoop()
+            tabrak = True
 
-    score = int(score)
-    score += 1
-    if (score%100) == 1:
-        speed_meteor += 0.0001
-        score = str(score)
-    else : 
-        score = str(score)        
+    # score = int(score)
+    # score += 1
+    # if (score%100) == 1:
+    #     speed_meteor += 0.0001
+    #     score = str(score)
+    # else : 
+    #     score = str(score)   
+
+    # lvl = int(lvl) 
+    # lvl += 1
+    # if (lvl%100) == 1:
+    #     speed_meteor += 0.0001
+    #     lvl = str(lvl)
+    # else : 
+    #     lvl = str(lvl)
 
 def gerak_meteor1():
-    global Y_meteor, meteor, speed_meteor, x_jalan_kiri, x_jalan_kanan, x_batas_kiri_player, x_batas_kanan_player, score
+    global Y_meteor, meteor, speed_meteor, x_jalan_kiri, x_jalan_kanan, x_batas_kiri_player, x_batas_kanan_player, score, lvl, tabrak
     Y_meteor -= speed_meteor
     
     if Y_meteor < -1300:
@@ -98,22 +118,31 @@ def gerak_meteor1():
     if meteor[1] == 10:
         if (gerak_x in range(meteor[0] - 30, meteor[0] + 40)) <= -1160:
             time.sleep(3)
-            glutLeaveMainLoop()
+            tabrak = True
     elif meteor[1] == 30:
         if (gerak_x in range(meteor[0] - 50, meteor[0] + 60)) <= -1150:
             time.sleep(3)
-            glutLeaveMainLoop()
+            tabrak = True
     elif meteor[1] == 40:
         if (gerak_x in range(meteor[0] - 60, meteor[0] + 70)) <= -1140:
             time.sleep(3)
-            glutLeaveMainLoop()
-    score = int(score)
-    score += 1
-    if (score%100) == 1:
-        speed_meteor += 0.001
-        score = str(score)
-    else : 
-        score = str(score)
+            tabrak = True
+
+    # score = int(score)
+    # score += 1
+    # if (score%100) == 1:
+    #     speed_meteor += 0.001
+    #     score = str(score)
+    # else : 
+    #     score = str(score)
+
+    # lvl = int(lvl) 
+    # lvl += 1
+    # if (lvl%100) == 1:
+    #     speed_meteor += 0.001
+    #     lvl = str(lvl)
+    # else : 
+    #     lvl = str(lvl)
 
 def meteorsPoints(x, y, s):
     glTranslate(0, Y_meteor, 0)
@@ -144,7 +173,7 @@ def jalan():
     glVertex2f(x_jalan_kanan, -500)
     glEnd()
 
-def munculkan_text(x, y, font, text, score, r,  g , b , a):
+def munculkan_text_score(x, y, font, text, score, r,  g , b , a):
     blending = False 
 
     if glIsEnabled(GL_BLEND) :
@@ -160,24 +189,54 @@ def munculkan_text(x, y, font, text, score, r,  g , b , a):
     if not blending :
         glDisable(GL_BLEND) 
 
+def munculkan_text_lvl(x, y, font, text, lvl, r,  g , b , a):
+    blending = False 
+
+    if glIsEnabled(GL_BLEND) :
+        blending = True
+
+    glRasterPos2f(x,y)
+
+    for i in text :
+        glutBitmapCharacter(font, ctypes.c_int(ord(i)))
+    for i in lvl :
+        glutBitmapCharacter(font, ctypes.c_int(ord(i)))
+
+    if not blending :
+        glDisable(GL_BLEND) 
+
 def Score():
-    munculkan_text(-455, 450, glut.GLUT_BITMAP_HELVETICA_18, "Score: ", score, 1, 1, 1, 0)
+    munculkan_text_score(-455, 450, glut.GLUT_BITMAP_HELVETICA_18, "Score: ", str(score), 1, 1, 1, 0)
     glutSwapBuffers()
+
+def Level():
+    munculkan_text_lvl(-455, 400, glut.GLUT_BITMAP_HELVETICA_18, "Level: ", str(lvl), 1, 1, 1, 0)
+    glutSwapBuffers()
+
+def scoring():
+    global score, lvl, tabrak, speed_meteor, speed_meteor1
+    if tabrak == False:
+        score += 1
+        if (score%10000) == 1:
+            lvl += 1
+            speed_meteor += 0.02
+            speed_meteor1 += 0.2
+ 
+def circle(r,xR,yR):
+    glPushMatrix()
+    glColor3ub(0,0,255)
+    glBegin(GL_POLYGON)
+    for i in range(360):
+        theta= 2 *3.1415926*i/360
+        x = r * math.cos(theta)
+        y = r * math.sin(theta)
+        glVertex2f(x + xR, y + yR)
+    glEnd();
+    glPopMatrix()
 
 def planet():
     global plnt_x, plnt_y
-    # PLANET 1
-    glBegin(GL_POLYGON)
-    glColor3ub(16, 35, 110)
-    glVertex2f(plnt_x - 125, plnt_y + 155)
-    glVertex2f(plnt_x - 125, plnt_y + 290)
-    glVertex2f(plnt_x - 220, plnt_y + 380)
-    glVertex2f(plnt_x - 355, plnt_y + 380)
-    glVertex2f(plnt_x - 445, plnt_y + 295)
-    glVertex2f(plnt_x - 445, plnt_y + 160)
-    glVertex2f(plnt_x - 350, plnt_y + 65)
-    glVertex2f(plnt_x - 220, plnt_y + 65)
-    glEnd()
+    circle(50,100,100)
 
 def player():
     global gerak_x, gerak_y
@@ -233,31 +292,46 @@ def input_keyboard(key, x, y):
         glutLeaveMainLoop()
 
 def menu():
+    global play
     glClear(GL_COLOR_BUFFER_BIT)
-    glPushMatrix()
-    player()
-    glPopMatrix()
-    glPushMatrix()
-    planet()
-    glPopMatrix()
-    glPushMatrix()
-    jalan()
-    glPopMatrix()
-    glPushMatrix()
-    meteorsPoints(meteor[0], 800, meteor[1])
-    glPopMatrix()
-    glPushMatrix()
-    gerak_meteor()
-    glPopMatrix()
-    glPushMatrix()
-    meteorsPoints1(meteor[0], 800, meteor[1])
-    glPopMatrix()
-    glPushMatrix()
-    gerak_meteor1()
-    glPopMatrix()
-    glPushMatrix()
-    Score()
-    glPopMatrix()
+    if play == True:
+        if tabrak == False:
+            # print (speed_meteor)
+            glPushMatrix()
+            player()
+            glPopMatrix()
+            glPushMatrix()
+            planet()
+            glPopMatrix()
+            glPushMatrix()
+            jalan()
+            glPopMatrix()
+            glPushMatrix()
+            meteorsPoints(meteor[0], 800, meteor[1])
+            glPopMatrix()
+            glPushMatrix()
+            gerak_meteor()
+            glPopMatrix()
+            glPushMatrix()
+            meteorsPoints1(meteor[0], 800, meteor[1])
+            glPopMatrix()
+            glPushMatrix()
+            gerak_meteor1()
+            glPopMatrix()
+            glPushMatrix()
+            scoring()
+            glPopMatrix()
+            glPushMatrix()
+            Score()
+            glPopMatrix()
+            glPushMatrix()
+            Level()
+            glPopMatrix()
+        else:
+            print("GAME OVER") # bagian game over
+    else:
+        print("PLAY GAME")
+        play = True # kalo tombol play diklik, masuk ke game
     glFlush()
 
 def main():
