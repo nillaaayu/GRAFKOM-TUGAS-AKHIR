@@ -31,7 +31,7 @@ lvl = 1
 
 # posisi spawn meteors
 random_X_spawn = []
-for i in range(-400, 400, 10):
+for i in range(-350, 350, 10):
     random_X_spawn.append(i)
 
 # ukuran meteor
@@ -113,7 +113,7 @@ def gerak_meteor1():
     
     if Y_meteor < -1300:
         meteor = [random_X_spawn[ rn.randint(0, len(random_X_spawn) - 1 )], ukuran_meteor[rn.randint(0, 2)]]
-        X_meteors = 0
+        Y_meteor = 0
 
     if meteor[1] == 10:
         if (gerak_x in range(meteor[0] - 30, meteor[0] + 40)) <= -1160:
@@ -255,18 +255,18 @@ def player():
     # LEFT WING
     glBegin(GL_QUADS)
     glColor3ub(150, 0, 0)
-    glVertex2f(pla_x_1 - 20 + gerak_x, pla_y_1 - 60 + gerak_y)
-    glVertex2f(pla_x_1 - 20 + gerak_x, pla_y_1 - 40 + gerak_y)
-    glVertex2f(pla_x_1 + 12 + gerak_x, pla_y_1 - 20 + gerak_y)
-    glVertex2f(pla_x_1 + 7 + gerak_x, pla_y_1 - 40 + gerak_y)
+    glVertex2f(pla_x_1 - 5 + gerak_x, pla_y_1 - 60 + gerak_y)
+    glVertex2f(pla_x_1 - 5 + gerak_x, pla_y_1 - 40 + gerak_y)
+    glVertex2f(pla_x_1 + 12 + gerak_x, pla_y_1 + 10 + gerak_y)
+    glVertex2f(pla_x_1 + 5 + gerak_x, pla_y_1 - 40 + gerak_y)
     glEnd()
 
     # RIGHT WING
     glBegin(GL_QUADS)
     glColor3ub(150, 0, 0)
-    glVertex2f(pla_x_1 + 68 + gerak_x, pla_y_1 - 20 + gerak_y)
-    glVertex2f(pla_x_1 + 100 + gerak_x, pla_y_1 - 40 + gerak_y)
-    glVertex2f(pla_x_1 + 100 + gerak_x, pla_y_1 - 60 + gerak_y)
+    glVertex2f(pla_x_1 + 68 + gerak_x, pla_y_1 + 10 + gerak_y)
+    glVertex2f(pla_x_1 + 87 + gerak_x, pla_y_1 - 47 + gerak_y)
+    glVertex2f(pla_x_1 + 87 + gerak_x, pla_y_1 - 65 + gerak_y)
     glVertex2f(pla_x_1 + 72 + gerak_x, pla_y_1 - 40 + gerak_y)
     glEnd()
 
@@ -284,13 +284,25 @@ def input_keyboard(key, x, y):
 
     # Untuk mengubah posisi player
     if key == GLUT_KEY_RIGHT:
-        gerak_x += 20
+        gerak_x += 30
     if key == GLUT_KEY_LEFT:
-        gerak_x -= 20
+        gerak_x -= 30
 
     if gerak_x == x_batas_kiri_player or gerak_x == x_batas_kanan_player:
         glutLeaveMainLoop()
+def gameover(x, y, font, text, r,  g , b , a):
+    blending = False 
 
+    if glIsEnabled(GL_BLEND) :
+        blending = True
+
+    glRasterPos2f(x,y)
+
+    for i in text :
+        glutBitmapCharacter(font, ctypes.c_int(ord(i)))
+
+    if not blending :
+        glDisable(GL_BLEND)
 def menu():
     global play
     glClear(GL_COLOR_BUFFER_BIT)
@@ -328,12 +340,14 @@ def menu():
             Level()
             glPopMatrix()
         else:
-            print("GAME OVER") # bagian game over
+            gameover(-100,0, glut.GLUT_BITMAP_HELVETICA_18, "GAME OVER ", 1, 1, 1, 0)
+            glutSwapBuffers()
+            # bagian game over
     else:
         print("PLAY GAME")
         play = True # kalo tombol play diklik, masuk ke game
     glFlush()
-
+ 
 def main():
     glutInit(sys.argv)
     glutInitDisplayMode(GLUT_SINGLE|GLUT_RGB)
